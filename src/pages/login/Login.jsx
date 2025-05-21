@@ -29,7 +29,7 @@ const Login = () => {
 
             const data = await response.json();
             localStorage.setItem('token', data.access_token);
-            localStorage.setItem('user', JSON.stringify(data.user)); // Store user info if needed
+            localStorage.setItem('user', JSON.stringify(data.user)); 
 
             navigate("/home");
         } catch (error) {
