@@ -14,7 +14,7 @@ const Checkout = () => {
   });
 
   const [product, setProduct] = useState(null);
-  const [quantity, setQuantity] = useState(1); // ✅ Added quantity state
+  const [quantity, setQuantity] = useState(1); 
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const productId = searchParams.get("id");
@@ -82,7 +82,7 @@ const Checkout = () => {
 
   const handlePlaceOrder = async () => {
   try {
-    // Step 1: Place Order
+    
     const orderResponse = await axios.post("http://localhost:8002/orders", null, {
       params: {
         user_id: userData.id,
@@ -95,7 +95,7 @@ const Checkout = () => {
       const orderId = orderResponse.data.order_id;
       alert(`Order placed successfully! Order ID: ${orderId}`);
 
-      // Step 2: Create Shipping
+      
       const shippingResponse = await axios.post("http://localhost:8005/shipping", {
         orderId: orderId,
         userId: userData.id,
