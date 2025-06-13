@@ -82,7 +82,9 @@ const Checkout = () => {
 
   const handlePlaceOrder = async () => {
   try {
-    
+    const totalAmount = product.price * quantity;
+
+    // Step 1: Create Order
     const orderResponse = await axios.post("http://localhost:8002/orders", null, {
       params: {
         user_id: userData.id,
@@ -91,29 +93,54 @@ const Checkout = () => {
       },
     });
 
-    if (orderResponse.status === 200) {
-      const orderId = orderResponse.data.order_id;
-      alert(`Order placed successfully! Order ID: ${orderId}`);
-
-      
-      const shippingResponse = await axios.post("http://localhost:8005/shipping", {
-        orderId: orderId,
-        userId: userData.id,
-        address: userData.address,
-      });
-
-      if (shippingResponse.status === 200) {
-        alert(`Shipping created! Tracking ID: ${shippingResponse.data.trackingId}`);
-      } else {
-        console.warn("Shipping creation failed");
-      }
-      navigate('/orders');
+    if (orderResponse.status !== 200) {
+      alert("Order placement failed.");
+      return;
     }
+
+    const orderId = orderResponse.data.order_id;
+    console.log("Order created:", orderId);
+
+    // Step 2: Initiate Payment
+    const paymentResponse = await axios.post("http://localhost:8006/payments/initiate", {
+      orderId: orderId,
+      userId: userData.id,
+      amount: totalAmount,
+      currency: "INR",
+    });
+
+    if (paymentResponse.status !== 200) {
+      alert("Payment initiation failed.");
+      return;
+    }
+
+    const { paymentId, gatewayPaymentUrl } = paymentResponse.data;
+    console.log("Payment initiated:", paymentId);
+    console.log("Gateway URL:", gatewayPaymentUrl);
+
+    // Step 3: Create Shipping Entry
+    const shippingResponse = await axios.post("http://localhost:8005/shipping", {
+      orderId: orderId,
+      userId: userData.id,
+      address: userData.address,
+    });
+
+    if (shippingResponse.status === 200) {
+      alert(`Order Placed! Tracking ID: ${shippingResponse.data.trackingId}`);
+    } else {
+      alert("Shipping creation failed.");
+      return;
+    }
+
+    navigate("/orders");
+
   } catch (error) {
-    console.error("Error placing order or creating shipping:", error);
-    alert("Failed to place order. Please try again.");
+    console.error("Error in checkout flow:", error);
+    alert("Something went wrong during the checkout process. Please try again.");
   }
 };
+
+
 
   return (
     <div className="checkout-page">

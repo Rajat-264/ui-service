@@ -26,7 +26,7 @@ const Cart = () => {
         try {
             const res = await axios.get(`http://localhost:8002/cart/json?user_id=${userId}`);
             setCartItems(res.data);
-            fetchProductDetails(res.data); // Fetch details after cart is loaded
+            fetchProductDetails(res.data); 
         } catch (err) {
             console.error('Error fetching cart items:', err);
         }

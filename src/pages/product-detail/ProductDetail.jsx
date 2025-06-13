@@ -99,8 +99,11 @@ const ProductDetail = () => {
             <button className="btn" onClick={handleAddToCart}>
               Add to Cart
             </button>
+            
             <Link to={`/checkout?id=${product.id}`} style={{ textDecoration: 'none' }}>
-              <button className="btn">Buy Now</button>
+              <button className="btn">
+              Buy Now
+            </button>
             </Link>
           </div>
         </div>
