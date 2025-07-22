@@ -14,7 +14,6 @@ const OrderDetails = () => {
   const [product, setProduct] = useState(null);
   const [address, setAddress] = useState(null);
 
-  // Fetch all orders once
   useEffect(() => {
     fetch("http://localhost:8002/orders")
       .then((res) => res.json())
@@ -22,7 +21,6 @@ const OrderDetails = () => {
       .catch((err) => console.error("Error fetching orders:", err));
   }, []);
 
-  // Fetch product details for all orders
   useEffect(() => {
     if (orders.length > 0) {
       const fetchProductDetails = async () => {
@@ -52,7 +50,6 @@ const OrderDetails = () => {
     }
   }, [orders]);
 
-  // Fetch current user (for address)
   useEffect(() => {
     const fetchCurrentUser = async () => {
       try {
@@ -78,7 +75,6 @@ const OrderDetails = () => {
     if (token) fetchCurrentUser();
   }, [token]);
 
-  // Set the specific order and product
   useEffect(() => {
     const foundOrder = orders.find((o) => o.order_id === parseInt(orderId));
     if (foundOrder) {
@@ -88,7 +84,6 @@ const OrderDetails = () => {
     }
   }, [orders, productsMap, orderId]);
 
-  // Set the address (after userAddresses are loaded)
   useEffect(() => {
     if (Object.keys(userAddresses).length > 0) {
       const userId = Object.keys(userAddresses)[0];
@@ -126,7 +121,6 @@ const OrderDetails = () => {
         <div className="order-details">
           <h2 className="order-title">Order Details:</h2>
           <p className="order-description">Order Status: Confirmed</p>
-          <p className="order-description">Payment Method: COD</p>
           <p className="order-description">Shipping Address: {formattedAddress}</p>
         </div>
       </div>

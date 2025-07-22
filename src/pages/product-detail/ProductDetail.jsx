@@ -90,6 +90,7 @@ const ProductDetail = () => {
             type="number"
             id="quantity"
             min="1"
+            className="quantity-input"
             max={product.stock}
             value={quantity}
             onChange={(e) => setQuantity(Math.max(1, Math.min(product.stock, parseInt(e.target.value) || 1)))}
@@ -100,8 +101,8 @@ const ProductDetail = () => {
               Add to Cart
             </button>
             
-            <Link to={`/checkout?id=${product.id}&qty=${quantity}`} style={{ textDecoration: 'none' }}>
-              <button className="btn">Buy Now</button>
+            <Link to={`/checkout?id=${product.id}&qty=${quantity}`} className="btn" style={{ textDecoration: 'none', color: 'white' }}>
+              Buy Now
             </Link>
           </div>
         </div>

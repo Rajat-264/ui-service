@@ -16,7 +16,7 @@ import OrderDetails from "./pages/order-detail/OrderDetails";
 const AppContent = () => {
   const location = useLocation();
 
-  const noNavbarRoutes = ['/login', '/signup'];
+  const noNavbarRoutes = ['/login', '/signup', '/'];
 
   const hideNavbar = noNavbarRoutes.includes(location.pathname);
 
@@ -25,6 +25,7 @@ const AppContent = () => {
       {!hideNavbar && <Navbar />}
       
       <Routes>
+        <Route path="/" element={<Login />} />
         <Route path="/home" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />

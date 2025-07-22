@@ -30,10 +30,8 @@ const Checkout = () => {
     fetchUserData();
 
     if (productId) {
-      // Buy Now flow
       fetchProduct(productId, parseInt(quantityParam) || 1);
     } else {
-      // Cart checkout flow
       fetchCartItems();
     }
   }, [productId]);
@@ -212,10 +210,10 @@ const Checkout = () => {
                       <div className="product-details">
                         <h3>{product.name}</h3>
                         <p>Quantity: {item.quantity}</p>
-                        <p>Price: ₹{product.price}</p>
+                        <p>Price: ${product.price}</p>
                       </div>
                       <div className="product-price">
-                        ₹{(product.price * item.quantity).toFixed(2)}
+                        ${(product.price * item.quantity).toFixed(2)}
                       </div>
                     </div>
                   )
@@ -224,7 +222,7 @@ const Checkout = () => {
             )}
                       <div >
                       <hr />
-                      <h3 className="order-total">Total: ₹{totalPrice.toFixed(2)}</h3>
+                      <h3 className="order-total">Total: ${totalPrice.toFixed(2)}</h3>
                       </div>
           </div>
 

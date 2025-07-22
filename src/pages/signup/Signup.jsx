@@ -26,45 +26,65 @@ const Signup = () => {
     };
 
     const handleSubmit = async (e) => {
-        e.preventDefault();
+    e.preventDefault();
 
-        if (!formData.agree) {
-            alert("Please agree to the terms and conditions.");
-            return;
-        }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const phoneRegex = /^[0-9]{10}$/;
 
-        if (formData.password !== formData.rePassword) {
-            alert("Passwords do not match!");
-            return;
-        }
+    if (!formData.agree) {
+        alert("Please agree to the terms and conditions.");
+        return;
+    }
 
-        const payload = {
-            name: formData.username,
-            password: formData.password,
-            email: formData.email,
-            phone: formData.phone,
-            addresses: [
-                {
-                    street: formData.street,
-                    city: formData.city,
-                    zip: formData.zip,
-                }
-            ],
-        };
+    if (!formData.email || !emailRegex.test(formData.email)) {
+        alert("Please enter a valid email address.");
+        return;
+    }
 
-        try {
-            const response = await axios.post("http://localhost:8001/users/signup", payload);
-            alert("Signup successful!");
-            console.log(response.data);
-            navigate("/login");
-        } catch (error) {
-            console.error(error);
-            alert("Signup failed: " + (error.response?.data?.detail || error.message));
-        }
+    if (!formData.phone || !phoneRegex.test(formData.phone)) {
+        alert("Please enter a valid 10-digit mobile number.");
+        return;
+    }
+
+    if (!formData.password || formData.password.length < 8) {
+        alert("Password must be at least 8 characters long.");
+        return;
+    }
+
+    if (formData.password !== formData.rePassword) {
+        alert("Passwords do not match!");
+        return;
+    }
+
+    const payload = {
+        name: formData.username,
+        password: formData.password,
+        email: formData.email,
+        phone: formData.phone,
+        addresses: [
+            {
+                street: formData.street,
+                city: formData.city,
+                zip: formData.zip,
+            }
+        ],
     };
+
+    try {
+        const response = await axios.post("http://localhost:8001/users/signup", payload);
+        alert("Signup successful!");
+        console.log(response.data);
+        navigate("/login");
+    } catch (error) {
+        console.error(error);
+        alert("Signup failed: " + (error.response?.data?.detail || error.message));
+    }
+};
+
 
     return (
         <div className="signup-page">
+            <span className="title">Signup</span>
             <form className="signup-card" onSubmit={handleSubmit}>
                 <input
                     type="text"

@@ -7,7 +7,7 @@ const Navbar = () => {
     return(
         <div className="navbar-container">
             <div className="navbar">
-                <Link to="/home" style={{textDecoration: "none"}}><div className="logo">ShopName</div></Link>
+                <Link to="/home" style={{textDecoration: "none"}}><div className="logo">Shopify</div></Link>
                 <div className="search-bar">
                     <img src={Search} alt="Search" className="search-icon" /> 
                     <input type="text" placeholder="Search" className="search-input" />

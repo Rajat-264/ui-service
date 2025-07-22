@@ -6,41 +6,16 @@ import axios from 'axios';
 
 const Products = () => {
   const navigate = useNavigate();
-  const [openFilter, setOpenFilter] = useState(null);
-  const [selectedFilters, setSelectedFilters] = useState({});
+  const [selectedPriceRange, setSelectedPriceRange] = useState("All");
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const toggleFilter = (filterName) => {
-    setOpenFilter(openFilter === filterName ? null : filterName);
-  };
-
-  const handleFilterSelect = (filterName, option) => {
-    setSelectedFilters(prev => {
-      if (option === "All" || prev[filterName] === option) {
-        const newFilters = { ...prev };
-        delete newFilters[filterName];
-        return newFilters;
-      }
-      return { ...prev, [filterName]: option };
-    });
-  };
-
-  const removeFilter = (filterName) => {
-    setSelectedFilters(prev => {
-      const newFilters = { ...prev };
-      delete newFilters[filterName];
-      return newFilters;
-    });
-  };
-
-  const filters = [
-    { name: "Category", options: ["All", "Electronics", "Clothing", "Home"] },
-    { name: "Brand", options: ["All", "Apple", "Samsung", "OnePlus"] },
-    { name: "Price", options: ["$0-100", "$100-200", "$200-500", "$500+"] },
-    { name: "Color", options: ["All", "Black", "White", "Blue", "Red"] },
-    { name: "Size", options: ["All", "S", "M", "L", "XL"] },
-    { name: "Rating", options: ["All", "4+ Stars", "3+ Stars", "2+ Stars"] }
+  const priceRanges = [
+    "All",
+    "$0-399",
+    "$400-699",
+    "$700-899",
+    "$900+"
   ];
 
   useEffect(() => {
@@ -69,69 +44,68 @@ const Products = () => {
     fetchProducts();
   }, []);
 
+  const filterProducts = (product) => {
+    if (selectedPriceRange === "All") return true;
+    const price = product.price;
+
+    if (selectedPriceRange === "$0-399") return price <= 399;
+    if (selectedPriceRange === "$400-699") return price >= 400 && price <= 699;
+    if (selectedPriceRange === "$700-899") return price >= 700 && price <= 899;
+    if (selectedPriceRange === "$900+") return price >= 900;
+
+    return true;
+  };
+
   return (
     <div className="products-page">
       <div className="products-header">
         <div className="keywords-container">
-          {Object.entries(selectedFilters).map(([filterName, option]) => (
+          {selectedPriceRange !== "All" && (
             <span 
-              key={`${filterName}-${option}`} 
               className="keyword"
-              onClick={() => removeFilter(filterName)}
+              onClick={() => setSelectedPriceRange("All")}
             >
-              {option} ×
+              {selectedPriceRange} ×
             </span>
-          ))}
+          )}
         </div>
       </div>
 
       <div className="products-content">
         <div className="filters-sidebar">
-          {filters.map((filter) => (
-            <div className="filter-group" key={filter.name}>
-              <div 
-                className="filter-header"
-                onClick={() => toggleFilter(filter.name)}
-              >
-                <span className="filter-label">{filter.name}</span>
-                <span className="filter-arrow">
-                  {openFilter === filter.name ? '−' : '+'}
-                </span>
-              </div>
-              {openFilter === filter.name && (
-                <div className="filter-options">
-                  {filter.options.map((option) => (
-                    <div key={option} className="filter-option">
-                      <input 
-                        type="radio" 
-                        id={`${filter.name}-${option}`}
-                        name={filter.name}
-                        className="filter-radio"
-                        checked={selectedFilters[filter.name] === option}
-                        onChange={() => handleFilterSelect(filter.name, option)}
-                      />
-                      <label htmlFor={`${filter.name}-${option}`}>
-                        {option}
-                      </label>
-                    </div>
-                  ))}
-                </div>
-              )}
+          <div className="filter-group">
+            <div className="filter-header">
+              <span className="filter-label">Price</span>
             </div>
-          ))}
+            <div className="filter-options">
+              {priceRanges.map((range) => (
+                <div key={range} className="filter-option">
+                  <input 
+                    type="radio" 
+                    id={`price-${range}`} 
+                    name="price" 
+                    className="filter-radio"
+                    checked={selectedPriceRange === range}
+                    onChange={() => setSelectedPriceRange(range)}
+                  />
+                  <label htmlFor={`price-${range}`}>{range}</label>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
 
         <div className="products-grid">
           {loading ? (
             <p>Loading...</p>
-          ) : products.length === 0 ? (
+          ) : products.filter(filterProducts).length === 0 ? (
             <p>No products found</p>
           ) : (
-            products.map((product) => (
+            products.filter(filterProducts).map((product) => (
               <div 
                 className="product-card" 
                 key={product.id} 
-                onClick={() => {navigate("/product-detail/"+product.id)}}
+                onClick={() => navigate("/product-detail/" + product.id)}
               >
                 <img src={oneplus} alt="Product" className="product-image" />
                 <div className="product-info">

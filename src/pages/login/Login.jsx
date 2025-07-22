@@ -9,7 +9,7 @@ const Login = () => {
 
     const handleSignIn = async () => {
         const formData = new URLSearchParams();
-        formData.append('username', email);  // FastAPI expects 'username'
+        formData.append('username', email);  
         formData.append('password', password);
 
         try {
@@ -40,6 +40,7 @@ const Login = () => {
 
     return (
         <div className="login-page">
+            <span className="title">Login</span>
             <div className="login-card">
                 <input
                     type="text"
